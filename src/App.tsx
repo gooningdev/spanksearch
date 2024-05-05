@@ -1,12 +1,13 @@
 import get, { AxiosResponse } from 'axios';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import './App.css';
-import { EpornerVideo, EpornerVideoSearchResponse } from './interfaces/eporner';
+import { EpornerVideoSearchResponse } from './interfaces/eporner';
 import { EPORNER_VIDEO_SEARCH_URL } from './utils';
 
+// TODO: Break down into smaller components
 const App = () => {
   const [inputText, setInputText] = useState('');
-  const [searchResults, setSearchResults] = useState<EpornerVideo[]>([]);
+  const [searchResults, setSearchResults] = useState<EpornerVideoSearchResponse>();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputText(event.target.value);
@@ -26,7 +27,7 @@ const App = () => {
     }
 
     if (!response) return;
-    setSearchResults(response.data.videos);
+    setSearchResults(response.data);
   };
 
   return (
@@ -43,19 +44,22 @@ const App = () => {
           />
         </form>
       </div>
-      {!!searchResults.length && (
-        searchResults.map(result => (
-          <>
-            <div key={result.id}>
-              <div>{result.title}</div>
-              <a target="_blank" href={result.url}>
-                <img src={result.default_thumb.src} />
+      {!!searchResults?.total_count && (
+        searchResults.videos.map(video => (
+          <div key={video.id}>
+            <div>
+              <div>{video.title}</div>
+              <a target="_blank" href={video.url}>
+                <img src={video.default_thumb.src} />
               </a>
             </div>
             <br />
-          </>
+          </div>
         ))
       )}
+      {/* TODO: Display count */}
+      {searchResults && !searchResults.total_count && <div>No search results found</div>}
+      {/* TODO: Pagination buttons */}
     </>
   );
 }

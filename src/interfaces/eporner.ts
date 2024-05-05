@@ -4,7 +4,7 @@ interface EpornerVideoThumbnail {
   src: string;
 }
 
-export interface EpornerVideo {
+interface EpornerVideo {
   default_thumb: EpornerVideoThumbnail;
   id: string;
   thumbs: EpornerVideoThumbnail[];

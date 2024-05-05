@@ -1,4 +1,4 @@
-import { Form, Input } from "antd";
+import { Form, Input, Pagination } from "antd";
 import get, { AxiosResponse } from 'axios';
 import { ChangeEvent, useState } from 'react';
 import './App.css';
@@ -29,9 +29,14 @@ const App = () => {
     setSearchResults(response.data);
   };
 
+  const handlePageChange = (/*page: number*/) => {
+    // TODO: Implement
+  };
+
   return (
     <>
       <h1>SpankSearch</h1>
+      {/* Search bar */}
       <div className="card">
         <Form onFinish={handleSubmit}>
           <Input
@@ -43,6 +48,7 @@ const App = () => {
           />
         </Form>
       </div>
+      {/* Search results */}
       {!!searchResults?.total_count && (
         searchResults.videos.map(video => (
           <div key={video.id}>
@@ -56,9 +62,15 @@ const App = () => {
           </div>
         ))
       )}
-      {/* TODO: Display count */}
       {searchResults && !searchResults.total_count && <div>No search results found</div>}
-      {/* TODO: Pagination buttons */}
+      {/* Pagination buttons */}
+      {searchResults && searchResults.total_count && (
+        <Pagination
+          pageSize={searchResults?.per_page}
+          total={searchResults?.total_count}
+          onChange={handlePageChange}
+        />
+      )}
     </>
   );
 }

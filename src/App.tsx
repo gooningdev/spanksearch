@@ -1,12 +1,12 @@
 import get, { AxiosResponse } from 'axios';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import './App.css';
-import { EpornerVideoSearchResponse } from './interfaces/eporner';
+import { EpornerVideo, EpornerVideoSearchResponse } from './interfaces/eporner';
 import { EPORNER_VIDEO_SEARCH_URL } from './utils';
 
 const App = () => {
   const [inputText, setInputText] = useState('');
-  // TODO: Store search results
+  const [searchResults, setSearchResults] = useState<EpornerVideo[]>([]);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputText(event.target.value);
@@ -24,7 +24,9 @@ const App = () => {
       console.error('Error searching videos.', e);
       // TODO: Indicate error to user
     }
-    console.log('Video search results:', response?.data);
+
+    if (!response) return;
+    setSearchResults(response.data.videos);
   };
 
   return (
@@ -41,6 +43,19 @@ const App = () => {
           />
         </form>
       </div>
+      {!!searchResults.length && (
+        searchResults.map(result => (
+          <>
+            <div key={result.id}>
+              <div>{result.title}</div>
+              <a target="_blank" href={result.url}>
+                <img src={result.default_thumb.src} />
+              </a>
+            </div>
+            <br />
+          </>
+        ))
+      )}
     </>
   );
 }

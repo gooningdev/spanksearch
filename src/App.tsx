@@ -1,5 +1,6 @@
+import { Form, Input } from "antd";
 import get, { AxiosResponse } from 'axios';
-import { ChangeEvent, FormEvent, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import './App.css';
 import { EpornerVideoSearchResponse } from './interfaces/eporner';
 import { EPORNER_VIDEO_SEARCH_URL } from './utils';
@@ -13,9 +14,7 @@ const App = () => {
     setInputText(event.target.value);
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
+  const handleSubmit = async () => {
     // Search videos
     let response: AxiosResponse<EpornerVideoSearchResponse> | null = null;
     try {
@@ -34,15 +33,15 @@ const App = () => {
     <>
       <h1>SpankSearch</h1>
       <div className="card">
-        <form onSubmit={handleSubmit}>
-          <input
+        <Form onFinish={handleSubmit}>
+          <Input
             id="searchBar"
             type="text"
             placeholder="Search"
             value={inputText}
             onChange={handleChange}
           />
-        </form>
+        </Form>
       </div>
       {!!searchResults?.total_count && (
         searchResults.videos.map(video => (

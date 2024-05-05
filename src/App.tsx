@@ -1,17 +1,30 @@
+import get, { AxiosResponse } from 'axios';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import './App.css';
+import { EpornerVideoSearchResponse } from './interfaces/eporner';
+import { EPORNER_VIDEO_SEARCH_URL } from './utils';
 
 const App = () => {
   const [inputText, setInputText] = useState('');
+  // TODO: Store search results
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setInputText(event.target.value);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    console.log(`Submitted form with text '${inputText}'`);
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // TODO: Search
+
+    // Search videos
+    let response: AxiosResponse<EpornerVideoSearchResponse> | null = null;
+    try {
+      const url = EPORNER_VIDEO_SEARCH_URL.replace('{0}', encodeURIComponent(inputText));
+      response = await get(url);
+    } catch (e) {
+      console.error('Error searching videos.', e);
+      // TODO: Indicate error to user
+    }
+    console.log('Video search results:', response?.data);
   };
 
   return (
@@ -27,9 +40,6 @@ const App = () => {
             onChange={handleChange}
           />
         </form>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
     </>
   );
